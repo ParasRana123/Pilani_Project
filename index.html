@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPulse: Your One-Stop Clinic Scheduler</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="image/logo.png">
+    <script src="https://kit.fontawesome.com/94694eb4cf.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style9.css">
+    <link rel="stylesheet" href="style3.css">
+    <link rel="stylesheet" href="style6.css">
+    <link rel="stylesheet" href="add_doc.css">
+    <link rel="stylesheet" href="style5.css">
+    <style>
+        /* carousel */
+        .carousel {
+            height: 70vh;
+            margin-top: 5px;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+            z-index: 0;
+        }
+
+        .carousel .list .item {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            inset: 0 0 0 0;
+        }
+
+        .carousel .list .item img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel .list .item .content {
+            position: absolute;
+            top: 10%;
+            width: 1140px;
+            max-width: 80%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding-right: 30%;
+            box-sizing: border-box;
+            color: #4682b4;
+            text-shadow: 0 5px 10px #0004;
+        }
+
+        .carousel .list .item .author {
+            font-weight: bold;
+            letter-spacing: 10px;
+        }
+
+        .carousel .list .item .title,
+        .carousel .list .item .topic {
+            font-size: 5em;
+            font-weight: bold;
+            line-height: 1.3em;
+        }
+
+        .carousel .list .item .topic {
+            color: #f1683a;
+        }
+
+        .carousel .list .item .des {
+            font-size: 1rem;
+        }
+
+        .carousel .list .item .buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 145px);
+            grid-template-rows: 40px;
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .carousel .list .item .buttons button {
+            border: none;
+            background-color: #eee;
+            letter-spacing: 3px;
+            font-family: Poppins;
+            font-weight: 500;
+        }
+
+        .carousel .list .item .buttons button:nth-child(2) {
+            background-color: transparent;
+            border: 1px solid #fff;
+            /* color: #eee; */
+        }
+
+        /* thumbail */
+        .thumbnail {
+            /* display: none; */
+            visibility: hidden;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            width: max-content;
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+        }
+
+        .thumbnail .item {
+            width: 150px;
+            height: 220px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .thumbnail .item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .thumbnail .item .content {
+            color: #fff;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+        }
+
+        .thumbnail .item .content .title {
+            font-weight: 500;
+        }
+
+        .thumbnail .item .content .description {
+            font-weight: 300;
+        }
+
+        /* arrows */
+        .arrows {
+            position: absolute;
+            top: 80%;
+            right: 52%;
+            z-index: 100;
+            width: 300px;
+            max-width: 30%;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .arrows button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #eee4;
+            border: none;
+            color: #fff;
+            font-family: monospace;
+            font-weight: bold;
+            transition: 0.5s;
+        }
+
+        .arrows button:hover {
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* animation */
+        .carousel .list .item:nth-child(1) {
+            z-index: 1;
+        }
+
+        /* animation text in first item */
+
+        .carousel .list .item:nth-child(1) .content .author,
+        .carousel .list .item:nth-child(1) .content .title,
+        .carousel .list .item:nth-child(1) .content .topic,
+        .carousel .list .item:nth-child(1) .content .des,
+        .carousel .list .item:nth-child(1) .content .buttons {
+            transform: translateY(50px);
+            filter: blur(20px);
+            opacity: 0;
+            animation: showContent 0.5s 1s linear 1 forwards;
+        }
+
+        @keyframes showContent {
+            to {
+                transform: translateY(0px);
+                filter: blur(0px);
+                opacity: 1;
+            }
+        }
+
+        .carousel .list .item:nth-child(1) .content .title {
+            animation-delay: 1.2s !important;
+        }
+
+        .carousel .list .item:nth-child(1) .content .topic {
+            animation-delay: 1.4s !important;
+        }
+
+        .carousel .list .item:nth-child(1) .content .des {
+            animation-delay: 1.6s !important;
+        }
+
+        .carousel .list .item:nth-child(1) .content .buttons {
+            animation-delay: 1.8s !important;
+        }
+
+        /* create animation when next click */
+        .carousel.next .list .item:nth-child(1) img {
+            width: 150px;
+            height: 220px;
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            border-radius: 30px;
+            animation: showImage 0.5s linear 1 forwards;
+        }
+
+        @keyframes showImage {
+            to {
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+        }
+
+        .carousel.next .thumbnail .item:nth-last-child(1) {
+            overflow: hidden;
+            animation: showThumbnail 0.5s linear 1 forwards;
+        }
+
+        .carousel.prev .list .item img {
+            z-index: 100;
+        }
+
+        @keyframes showThumbnail {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+        }
+
+        .carousel.next .thumbnail {
+            animation: effectNext 0.5s linear 1 forwards;
+        }
+
+        @keyframes effectNext {
+            from {
+                transform: translateX(150px);
+            }
+        }
+
+        /* running time */
+
+        .carousel .time {
+            position: absolute;
+            z-index: 1000;
+            width: 0%;
+            height: 3px;
+            background-color: #f1683a;
+            left: 0;
+            top: 0;
+        }
+
+        .carousel.next .time,
+        .carousel.prev .time {
+            animation: runningTime 3s linear 1 forwards;
+        }
+
+        @keyframes runningTime {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0;
+            }
+        }
+
+        /* prev click */
+
+        .carousel.prev .list .item:nth-child(2) {
+            z-index: 2;
+        }
+
+        .carousel.prev .list .item:nth-child(2) img {
+            animation: outFrame 0.5s linear 1 forwards;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        @keyframes outFrame {
+            to {
+                width: 150px;
+                height: 220px;
+                bottom: 50px;
+                left: 50%;
+                border-radius: 20px;
+            }
+        }
+
+        .carousel.prev .thumbnail .item:nth-child(1) {
+            overflow: hidden;
+            opacity: 0;
+            animation: showThumbnail 0.5s linear 1 forwards;
+        }
+
+        .carousel.next .arrows button,
+        .carousel.prev .arrows button {
+            pointer-events: none;
+        }
+
+        .carousel.prev .list .item:nth-child(2) .content .author,
+        .carousel.prev .list .item:nth-child(2) .content .title,
+        .carousel.prev .list .item:nth-child(2) .content .topic,
+        .carousel.prev .list .item:nth-child(2) .content .des,
+        .carousel.prev .list .item:nth-child(2) .content .buttons {
+            animation: contentOut 1.5s linear 1 forwards !important;
+        }
+
+        .container1 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .boxes {
+            margin-right: 50px;
+            margin-top: 40px;
+            padding: 30px;
+            /* border: 1px solid black; */
+            box-sizing: border-box;
+            font-size: 1.1 rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .boxes:hover {
+            transform: translateY(-5px);
+            /* Subtle lift effect on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            /* Slightly darker shadow */
+            background: transparent linear-gradient(281deg, #007C9D 0%, #01C9C9 100%) 0% 0% no-repeat;
+            color: white;
+        }
+
+        .boxes img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-left: 37px;
+        }
+
+        .connect {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .connect div:nth-child(2) {
+            color: White;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .login .cross {
+            position: absolute;
+            top: 3%
+        }
+
+        .google {
+            display: flex;
+            justify-content: center;
+            border: 2px solid blue;
+            border: 5px solid transparent;
+            border-image: linear-gradient(45deg, #4285F4, #34A853, #FBBC05, #EA4335);
+            border-image-slice: 1;
+            padding: 10px;
+        }
+
+        .google img {
+            width: 130px;
+            height: 60px
+        }
+
+        .google a {
+            color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 4px;
+            display: inline-block;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            font-size: 20px;
+            margin-top: 4px;
+            margin-right: 12px
+        }
+
+        .or {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .googlesign {
+            margin-top: 80px;
+            border: 5px solid transparent;
+            border-image: linear-gradient(45deg, #4285F4, #34A853, #FBBC05, #EA4335);
+            border-image-slice: 1;
+            padding: 10px;
+            margin-right: 120px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            font-size: 22px;
+            cursor: pointer;
+            align-items: center;
+        }
+
+        .googlesign img {
+            width: 80px;
+            height: 40px
+        }
+
+        .loginform input {
+            width: 60%;
+            margin-left: -15%
+        }
+
+        .loginform button {
+            margin-top: -80px;
+        }
+
+        .search {
+            position: relative;
+            left: 100px;
+            top: 50p;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href=""><img src="image/logo.png" alt="">
+            </a>
+            MedPulse
+
+        </div>
+        <div class="search-container">
+            <input type="text" id="doctor-search" placeholder="Search for doctors..." />
+            <ul id="suggestions" class="suggestions-list"></ul> <!-- Suggestions will appear here -->
+        </div>
+        <ul class="nav-links">
+            <li><a href="">Home</a></li>
+            <li><a href="google/hospital_locator">Hospital locator</a></li>
+            <li><a href="" class="services">Services</a></li>
+            <!-- <li id="patient">Patients</li> -->
+            <!-- <li><a href="doctor">Doctors and clinics</a></li> -->
+            <!-- <li><a href="billing">Billing</a></li> -->
+            <li id="patient_report">Prescription</li>
+            <!-- <li class="symptomschecker"><a href="prediction">Symptoms-checker</a></li> -->
+            <li id="login">Login</li>
+        </ul>
+    </nav>
+    <!-- <div class="main">
+        <div class="video">
+            <video src="home.mp4" autoplay muted loop></video>
+
+        </div>
+        <div class="content">
+            <h3>Transform with care</h3>
+            <a href="appointments"><button>Request Appointments
+
+                </button></a>
+        </div>
+
+    </div> -->
+    <!-- carousel -->
+    <div class="carousel">
+        <!-- list item -->
+        <div class="list">
+            <div class="item">
+                <img src="image/img_1.jpg" />
+                <div class="content" style="color: #000000">
+                    <div class="title">YOUR HEALTH OUR PRIORITY</div>
+                    <!-- <div class="topic">ANIMAL</div> -->
+                    <div class="des" style="color: #000000">
+                        <!-- lorem 50 -->
+                        From preventive care to advanced treatments, we are here to ensure
+                        your health is in the best hands. Our team of experienced
+                        professionals id dedicated to your well being.
+                    </div>
+                    <div class="buttons">
+                        <button style="color: #000000">LEARN MORE</button>
+                        <button style="color: #000000; font-size: 12px; text-align: center; border: 1px solid #000000; object-fit: contain;"
+                            class="appoint">
+                            BOOK APPOINTMENTS
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="image/chatbot2.jpg" />
+                <div class="content">
+                    <div class="title" style="color: white">
+                        YOUR VIRTUAL HEALTH ASSISTANT
+                    </div>
+                    <!-- <div class="topic">ANIMAL</div> -->
+                    <div class="des" style="color: white">
+                        Upload images of injuries or symptoms, and let our intelligent
+                        chatbot analyze them to identify potential conditions. Get instant
+                        insights, including causes, dos and don'ts, and when to consult a
+                        doctor. Empowering you with knowledge for better health decisions.
+                    </div>
+                    <div class="buttons">
+                        <button>LEARN MORE</button>
+                        <button id="tryChatbot" style="color: white">
+                            TRY THE CHATBOT
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="image/hosp.jpg" />
+                <div class="content">
+                    <div class="title" style="color: #002244">
+                        FIND HOSPITALS NEAR YOU
+                    </div>
+                    <div class="des" style="color: #002244">
+                        Need urgent care or looking for a healthcare facility nearby? Our
+                        advanced location-based feature helps you find hospitals in your
+                        area with ease. Get directions, contact details, and operational
+                        hours in just a few clicks. Your health emergencies deserve quick
+                        and reliable solutions!
+                    </div>
+                    <div class="buttons">
+                        <button style="color: #002244; border: 1px solid #002244">
+                            LEARN MORE
+                        </button>
+                        <button style="color: #002244; border: 1px solid #002244">
+                            FIND HOSPITALS
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="image/secoond.jpg" />
+                <div class="content">
+                    <div class="title" style="color: #333333">
+                        EXPLORE HEALTH INSIGHTS
+                    </div>
+                    <div class="des" style="color: #333333">
+                        Unlock insights into health with our Explore Conditions feature!!! Click on any condition to
+                        instantly view symptoms and treatments in an interactive popup. Stay informed, identify early
+                        signs, and take charge of your well-being with ease and confidence
+                    </div>
+                    <div class="buttons">
+                        <button style="color: #333333; border: 1px solid #333333">
+                            LEARN MORE
+                        </button>
+                        <button style="color: #333333; border: 1px solid #333333">
+                            EXPLORE NOW
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- list thumnail -->
+        <div class="thumbnail">
+            <div class="item">
+                <img src="image/img1.jpg" />
+                <div class="content">
+                    <div class="title">Name Slider</div>
+                    <div class="description">Description</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="image/img2.jpg" />
+                <div class="content">
+                    <div class="title">Name Slider</div>
+                    <div class="description">Description</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="image/img3.jpg" />
+                <div class="content">
+                    <div class="title">Name Slider</div>
+                    <div class="description">Description</div>
+                </div>
+            </div>
+            <div class="item">
+                <img src="image/img4.jpg" />
+                <div class="content">
+                    <div class="title">Name Slider</div>
+                    <div class="description">Description</div>
+                </div>
+            </div>
+        </div>
+        <!-- next prev -->
+        <div class="arrows">
+            <button id="prev"></button>
+            <button id="next">></button>
+        </div>
+        <!-- time running -->
+        <div class="time"></div>
+    </div>
+    <div class="container1" id="container1">
+        <div class="boxes" onclick="window.location.href='appointments'">
+            <img src="image/Appointment.png" />
+            <div class="text">Book Appointment</div>
+        </div>
+        <div class="boxes" onclick="window.location.href='doctor'">
+            <img src="image/find.png" />
+            <div class="text">Nearby Doctors</div>
+        </div>
+        <div class="boxes" onclick="window.location.href='prediction'">
+            <img src="image/diagnosis.png" />
+            <div class="text">Sympton Checker</div>
+        </div>
+        <div class="boxes" onclick="window.location.href='patient'">
+            <img src="image/medical-prescription.png" />
+            <div class="text">View Health Records</div>
+        </div>
+        <div class="boxes" onclick="window.location.href='chatbot.html'">
+            <img src="image/health.png" />
+            <div class="text">AI Chatbot</div>
+        </div>
+        <div class="boxes" onclick="window.location.href='health_wellness.html'">
+            <img src="image/heart.png" />
+            <div class="text">Health And Wellness</div>
+        </div>
+        <div class="boxes" onclick="window.location.href='products.html'">
+            <img src="image/pharmacy.png" />
+            <div class="text">Health Products</div>
+        </div>
+    </div>
+    <div class="container1" id="container1">
+        <div class="boxes" onclick="window.location.href='equity.html'">
+            <img src="image/equity.png" />
+            <div class="text">Health Equity Calculator</div>
+        </div>
+        <div class="boxes">
+            <img src="image/opinion_1.png" />
+            <div class="text">Book Second Opinion</div>
+        </div>
+    </div>
+    <div class="middle-one">
+        <img src="image/image.jpg" alt="">
+        <div class="text">
+            <h3>Discover How Our System Can Transform Your Clinic</h3>
+            <p>With a focus on precision and efficiency, our clinic management system is your partner in providing
+                exceptional healthcare. Learn more about our features and see how we can help you achieve excellence in
+                patient care.</p>
+            <button>Why choose MedPulse</button>
+        </div>
+    </div>
+    <div class="xyz" style="background-color: #ebfbff;">
+        <div class="middle-t">
+            <div>
+                <h2>Helping all to get
+                    <a href="appointments">appointments</a>
+                </h2>
+                <p>We make it easy for patients around the world to get care from MedPulse.</p>
+            </div>
+            <img src="image/image2.jpg" alt="">
+        </div>
+    </div>
+    <div class="explore">
+        <h2 style="text-align: center;">Explore Conditions</h2>
+        <p style="font-size: 15px;">Unlock the power of knowledge with our Explore Conditions section! With just a
+            click, discover essential information about various diseases, including their symptoms and the best
+            treatments available. Our interactive popups make it easy to access vital health insights, helping you
+            identify early signs and take proactive steps toward better health. Stay informed, stay empowered, and take
+            charge of your well-being!</p>
+        <div class="flex">
+            <div>
+                <img src="image/symp.avif" alt="">
+            </div>
+            <div class="exp1">
+                <div class="disease-box">Diabetes</div>
+                <div class="disease-box">Hypertension</div>
+                <div class="disease-box">Asthma</div>
+                <div class="disease-box">Cancer</div>
+                <div class="disease-box">Arthritis</div>
+                <div class="disease-box">Heart</div>
+                <div class="disease-box">Stroke</div>
+                <div class="disease-box">Kidney </div>
+                <div class="disease-box">Alzheimer</div>
+                <div class="disease-box">Parkinson</div>
+                <div class="disease-box">Sclerosis</div>
+            </div>
+        </div>
+    </div>
+    <div class="features">
+        <div class="intro">
+            <h1>Featured Care Areas</h1>
+            <h3>We solve the world's most serious and complex medical challenges.</h3>
+        </div>
+        <div class="others">
+            <div class="diseases">
+                <ul>
+                    <li>Bone Marrow Transplant</li>
+                    <li>Brain aneurysm</li>
+                    <li>Breast Cancer</li>
+                    <li>Colon Cancer</li>
+                    <li>Brain Tumor</li>
+                    <li>Glioma</li>
+                    <li>Congenital Heart Disease</li>
+                    <li>Heart Transplant</li>
+                    <li>Testicular Cancer</li>
+                    <li>Migraine</li>
+                    <li>Obsessive-Compulsive Disorder</li>
+                </ul>
+            </div>
+            <div class="image">
+                <img src="image/symp1.jpg" alt="">
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="first">
+            <button class="Find">Find a Doctor</button>
+            <br>
+            <br>
+            <button>Explore career</button>
+            <br><br><br>
+            <div class="about">
+                <a href="index.html">About MedPulse</a>
+                <p>About Us</p>
+                <p>Contact Us</p>
+                <p>Locations Around You</p>
+            </div>
+        </div>
+        <div class="second">
+            <h1>Medical Professionals</h1>
+            <p>Ask MedPulseExpert</p>
+            <p>Refer a patient</p>
+            <p>Access Patient Records</p>
+            <p>Practice Management Tips</p>
+            <p>Clinical Updates and News</p>
+            <p>Contact Support Team</p>
+        </div>
+        <div class="third">
+            <p>Laboratories</p>
+            <p>Appointments</p>
+            <p>Medical Shops near</p>
+            <p>Health Guide's Sites:</p>
+            <a href="https://www.health.com">Health.com</a>
+            <br>
+            <br>
+            <a href="http://signifyhealth.com">Signify Health</a>
+            <br>
+            <br>
+            <a href="https://alfavitamins.com/">Vitamins</a>
+        </div>
+    </footer>
+    <div class="connect">
+        <div>
+            <i class="fa-brands fa-facebook"></i>
+            <i class="fa-brands fa-x-twitter"></i>
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-linkedin"></i>
+            <i class="fa-brands fa-youtube"></i>
+        </div>
+        <!-- <br> -->
+        <!-- <div>Created by Aditya Kurani and Utkarsh Pise</div> -->
+    </div>
+    <div class="last">
+        <div>Terms and conditions</div>
+        <div>Privacy Statements </div>
+        <div>Accessibility Statements</div>
+        <div>Advertising and sponsorship Policy</div>
+        <div>Site map</div>
+    </div>
+    <div class="copy">
+        &copy; 2024 MedPulse for medical services.
+    </div>
+
+    <!-- <div class="loginmain"> -->
+    <div class="login">
+        <div class="cross">&times;</div>
+
+        <h4>MedPulse</h4>
+        <h3>Login as a patient</h3>
+        <div class="error"></div>
+        <div class="log">
+            <div class="logd">Signup</div>
+            <div class="signd">Login</div>
+        </div>
+        <div class="forms">
+
+            <form action="signup.php" method="post" class="signin">
+                <div>
+                    <input type="text" placeholder="Enter your first name" name="fname" required />
+                    <input type="text" placeholder="Enter your last name" name="lname" required />
+                </div>
+                <input type="email" name="email" placeholder="Enter your email " required>
+                <input type="number" placeholder="Enter your number" name="number" required>
+                <input type="password" placeholder="Enter your password" name="password" required>
+                <button class="signinbutton">Let's get a appointment</button>
+                <div class="or"> or </div>
+
+                <div class="google">
+                    <img src="image/googlelogo.png" alt="">
+                    <a href="google.php">signup with google</a>
+                </div>
+            </form>
+
+            <form action="login.php" method="POST" class="loginform">
+                <div class="error"></div>
+                <input type="text" placeholder="Enter your email or number" name="cred" required><br><br>
+                <input type="password" placeholder="Enter your password" name="password" required><br><br>
+                <button>Login</button>
+
+                <div class="googlesign">
+                    <img src="image/googlelogo.png" alt="">
+
+                    <a href="googlelogin.php">login with google</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="loginchoice">
+        <div>
+            <h1>MedPulse</h1>
+        </div>
+        <div class="options">
+            <div class="doc option">
+                <div>Login as a Doctor</div>
+            </div>
+
+            <div class="pat option">
+                <div>Login as a Patient</div>
+            </div>
+
+
+        </div>
+        <div class="clinic option" id="clinic">
+            <div>Login or signup as a clinic manager</div>
+        </div>
+        <!-- <div class="register-clinic">Register as a Clinic</div> -->
+    </div>
+
+
+    <div class="logindoc">
+        <div class="login">
+            <div class="cross">&times;</div>
+
+            <h4>MedPulse</h4>
+            <h3>Login as a doctor</h3>
+            <div class="error"></div>
+
+            <div class="forms">
+
+                <form action="logindoctor.php" method="post" class="signin">
+                    <input type="number" placeholder="Enter your ref id" name="ref_id" required>
+                    <input type="password" placeholder="Enter your password" name="password" required>
+                    <button class="signinbutton">Let's start the appointments</button>
+                </form>
+                <div class="error"></div> <!-- Error message container -->
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="add_doc">
+        <div class="cros">&times;</div>
+        <h2 class="title">MedPulse - Add Doctors</h2>
+        <div class="error"></div>
+
+
+
+    </div>
+
+    <div class="overlay"></div>
+    <div class="popup">
+        <span class="close">&times;</span>
+        <h2 class="disease-name"></h2>
+        <p><strong>Symptoms:</strong> <span class="disease-symptoms"></span></p>
+        <p><strong>Cure:</strong> <span class="disease-cure"></span></p>
+    </div>
+    </div>
+    <div class="clinic-login-form">
+        <div class="cross">&times;</div>
+        <div class="head">
+            <img src="image/logo.png" alt="">
+            <h2>MedPulse</h2>
+        </div>
+        <h2>Clinic Login</h2>
+        <div class="cho">
+            <div id="log">Login</div>
+            <div id="sign">Signup</div>
+        </div>
+        <form action="clinic_login.php" method="POST" class="clinic_login" id="clinicLoginForm">
+            <div class="error_cli"></div>
+            <div class="input-group">
+                <label for="clinic-id">Clinic ID</label>
+                <input type="number" id="clinic-id" name="clinic-id" placeholder="Enter your Clinic ID" min="0"
+                    required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your Password" required>
+            </div>
+
+            <div class="submit-group">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+        <form action="clinic_signup.php" method="post" class="clinic_signup">
+            <div class="error_cli_sign"></div>
+            <input type="text" placeholder="Enter the clinics name" name="clinic">
+            <input type="text" placeholder="Enter the clinics address" name="address">
+            <input type="password" placeholder="Enter the password" name="password">
+            <br>
+            <br>
+            <button type="submit">Sign-Up</button>
+            <p>
+                A unique will be provided to you for login and signing up the doctors.
+
+            </p>
+        </form>
+    </div>
+
+    <script src="log.js"></script>
+    <script src="sign.js"></script>
+    <script src="script.js"></script>
+    <script src="signin.js"></script>
+    <script src="doctor.js"></script>
+    <script src="login_check_temp.js"></script>
+    <script src="report.js"></script>
+    <!-- <script src="disease_prediction.js"></script> -->
+    <script src="clinic.js"></script>
+    <script>
+        let xhrlogin = new XMLHttpRequest();
+        xhrlogin.open("GET", "login_check.php", true);
+        let login_clinic = false;
+        xhrlogin.onload = () => {
+            if (xhrlogin.status === 200) {
+                const data = xhrlogin.responseText;
+
+                if (data.trim() === "good") {
+                    document.getElementById("login").textContent = "Profile"
+                    login_clinic = true
+                }
+            } else {
+                alert("Error: Could not verify login.");
+                console.log("Error occurred: " + xhrlogin.status);
+            }
+        };
+
+        xhrlogin.onerror = () => {
+            console.error("Request failed due to a network error.");
+        };
+
+        xhrlogin.send();
+
+        if (login_clinic) { document.querySelector(".loginchoice").style.display = "none" }
+        document.getElementById("login").onclick = () => {
+            if (login_clinic) {
+                document.querySelector(".loginchoice").style.display = "none"
+                window.location.href = "profile";
+            }
+
+
+
+        }
+
+
+        document.getElementById("patient_report").onclick = () => {
+            let xhrlogin = new XMLHttpRequest();
+            xhrlogin.open("GET", "access.php", true);
+
+            xhrlogin.onload = () => {
+                if (xhrlogin.status === 200) {
+                    const data = xhrlogin.responseText;
+                    console.log(data)
+                    if (data.trim() === "good") {
+                        window.location.href = "reports";
+                        console.log("Patient access granted, redirecting...");
+                    } else {
+                        window.location.href = "reports/patient"
+
+                    }
+                } else {
+                    alert("Error: Could not verify login.");
+                    console.log("Error occurred: " + xhrlogin.status);
+                }
+            };
+
+            xhrlogin.onerror = () => {
+                console.error("Request failed due to a network error.");
+            };
+            console.log("clicked ")
+            xhrlogin.send();
+        };
+
+        console.log("heyyy");
+
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('DOM fully loaded and parsed');
+
+            try {
+                const response = await fetch('prediction.json'); // Ensure this path is correct
+                if (!response.ok) {
+                    throw new Error("Network response was not ok: ${response.statusText}");
+                }
+
+                const diseaseD = await response.json();
+                console.log(diseaseD);
+
+                const diseaseMap = new Map();
+                diseaseD.diseaseData.forEach(disease => {
+                    diseaseMap.set(disease.name, {
+                        symptoms: disease.symptoms,
+                        cure: disease.cure
+                    });
+                });
+
+                // Elements for popup and overlay
+                const popup = document.querySelector('.popup');
+                const overlay = document.querySelector('.overlay');
+                const diseaseNameElem = document.querySelector('.popup .disease-name');
+                const diseaseSymptomsElem = document.querySelector('.popup .disease-symptoms');
+                const diseaseCureElem = document.querySelector('.popup .disease-cure');
+                const closeBtn = document.querySelector('.popup .close');
+
+                function showPopup(diseaseName, symptoms, cure) {
+                    diseaseNameElem.textContent = diseaseName;
+                    diseaseSymptomsElem.textContent = symptoms.join(', ');
+                    diseaseCureElem.textContent = cure;
+                    popup.classList.add('visible');
+                    overlay.classList.add('visible');
+                }
+
+                // Function to hide popup
+                function hidePopup() {
+                    popup.classList.remove('visible');
+                    overlay.classList.remove('visible');
+                }
+
+                // Add event listeners to all disease items
+                const diseaseItems = document.querySelectorAll(".diseases ul li");
+                diseaseItems.forEach(item => {
+                    item.addEventListener("click", () => {
+                        const diseaseName = item.textContent.trim();
+                        if (diseaseMap.has(diseaseName)) {
+                            const { symptoms, cure } = diseaseMap.get(diseaseName);
+                            showPopup(diseaseName, symptoms, cure);
+                        } else {
+                            console.log("Disease data not found");
+                        }
+                    });
+                });
+                const d = document.querySelectorAll(".explore div div")
+
+                d.forEach(item => {
+                    item.addEventListener("click", () => {
+                        const diseaseName = item.textContent.trim();
+                        if (diseaseMap.has(diseaseName)) {
+                            const { symptoms, cure } = diseaseMap.get(diseaseName);
+                            showPopup(diseaseName, symptoms, cure);
+                        } else {
+                            console.log("Disease data not found");
+                        }
+                    });
+                })
+                // Close button and overlay click to hide popup
+                closeBtn.addEventListener('click', hidePopup);
+                overlay.addEventListener('click', hidePopup);
+
+            } catch (error) {
+                console.error('Error fetching JSON data:', error);
+            }
+        });
+
+        //step 1: get DOM
+        let nextDom = document.getElementById('next');
+        let prevDom = document.getElementById('prev');
+
+        let carouselDom = document.querySelector('.carousel');
+        let SliderDom = carouselDom.querySelector('.carousel .list');
+        let thumbnailBorderDom = document.querySelector('.carousel .thumbnail');
+        let thumbnailItemsDom = thumbnailBorderDom.querySelectorAll('.item');
+        let timeDom = document.querySelector('.carousel .time');
+
+        thumbnailBorderDom.appendChild(thumbnailItemsDom[0]);
+        let timeRunning = 3000;
+        let timeAutoNext = 7000;
+
+        nextDom.onclick = function () {
+            showSlider('next');
+        }
+
+        prevDom.onclick = function () {
+            showSlider('prev');
+        }
+        let runTimeOut;
+        let runNextAuto = setTimeout(() => {
+            next.click();
+        }, timeAutoNext)
+        function showSlider(type) {
+            let SliderItemsDom = SliderDom.querySelectorAll('.carousel .list .item');
+            let thumbnailItemsDom = document.querySelectorAll('.carousel .thumbnail .item');
+
+            if (type === 'next') {
+                SliderDom.appendChild(SliderItemsDom[0]);
+                thumbnailBorderDom.appendChild(thumbnailItemsDom[0]);
+                carouselDom.classList.add('next');
+            } else {
+                SliderDom.prepend(SliderItemsDom[SliderItemsDom.length - 1]);
+                thumbnailBorderDom.prepend(thumbnailItemsDom[thumbnailItemsDom.length - 1]);
+                carouselDom.classList.add('prev');
+            }
+            clearTimeout(runTimeOut);
+            runTimeOut = setTimeout(() => {
+                carouselDom.classList.remove('next');
+                carouselDom.classList.remove('prev');
+            }, timeRunning);
+
+            clearTimeout(runNextAuto);
+            runNextAuto = setTimeout(() => {
+                next.click();
+            }, timeAutoNext)
+        }
+
+        document.getElementById('tryChatbot').addEventListener('click', function () {
+            const targetSection = document.getElementById('container2');
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.querySelector('.services').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+            document.querySelector('.container1').scrollIntoView({
+                behavior: 'smooth', // Smooth scrolling
+                block: 'start'      // Align the section to the top of the viewport
+            });
+        });
+
+        document.getElementById("doctor-search").addEventListener("input", function () {
+            const query = this.value.trim();
+            const suggestions = document.getElementById("suggestions");
+
+            if (query.length > 0) {
+                fetch(`search_doctors1.php?query=${encodeURIComponent(query)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        suggestions.innerHTML = ""; // Clear previous results
+
+                        if (data.length > 0) {
+                            data.forEach(item => {
+                                const li = document.createElement("li");
+                                li.innerHTML = `
+                            <a href="doctor?doctor=${item.id}">
+                                ${item.fname} ${item.lname} (${item.specialty})
+                            </a>`;
+                                suggestions.appendChild(li);
+                            });
+                        } else {
+                            const li = document.createElement("li");
+                            li.classList.add("no-results");
+                            li.textContent = "No doctors found";
+                            suggestions.appendChild(li);
+                        }
+
+                        // Show the dropdown
+                        suggestions.style.display = "block";
+                    })
+                    .catch(error => {
+                        console.error("Error fetching data:", error);
+                    });
+            } else {
+                // Hide the dropdown if input is empty
+                suggestions.innerHTML = "";
+                suggestions.style.display = "none";
+            }
+        });
+
+        // Close the dropdown when clicking outside the search bar
+        document.addEventListener("click", function (event) {
+            const suggestions = document.getElementById("suggestions");
+            const searchBox = document.getElementById("doctor-search");
+            if (!searchBox.contains(event.target)) {
+                suggestions.style.display = "none";
+            }
+        });
+
+
+        document.querySelector('.appoint').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+            document.querySelector('.xyz').scrollIntoView({
+                behavior: 'smooth', // Smooth scrolling
+                block: 'start'      // Align the section to the top of the viewport
+            });
+        });
+    </script>
+</body>
+
+</html>
